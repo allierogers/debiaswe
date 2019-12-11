@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-import we
+from . import we
 import json
 import numpy as np
 import argparse
