@@ -53,12 +53,13 @@ def upload_file():
       <p>Representative Words</p>
       <input type="text" name="rep_word_one" value="he">
       <input type="text" name="rep_word_two" value="she">
-      <input type="submit" value="Upload">
+      <input type="submit" value="Upload and Get Analogies">
     </form>
     '''
 
-@app.route('/analogies/<filename>/<rep_word_one>/<rep_word_two>', methods=['GET'])
+@app.route('/analogies/<filename>/<rep_word_one>/<rep_word_two>', methods=['GET', 'POST'])
 def analogies(filename, rep_word_one, rep_word_two):
+    if request.method == 'POST':
     fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     
     embedding = WordEmbedding(fp)
