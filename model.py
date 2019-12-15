@@ -1,3 +1,6 @@
+import numpy as np
+from debiaswe.we import WordEmbedding
+
 def compute_bias_direction(rep_words=['he', 'she']):
     """ Get the subspace that we will use to represent the bias. 
     """

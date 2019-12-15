@@ -147,15 +147,15 @@ class WordEmbedding:
         print("Computing neighbors")
         self.thresh = thresh
         self.max_words = max_words
-        dots = vecs.dot(vecs.T)
+        dots = self.vecs.dot(self.vecs.T)
         dots = scipy.sparse.csr_matrix(dots * (dots >= 1-thresh/2))
         from collections import Counter
         rows, cols = dots.nonzero()
         nums = list(Counter(rows).values())
         print("Mean:", np.mean(nums)-1)
         print("Median:", np.median(nums)-1)
-        rows, cols, vecs = zip(*[(i, j, vecs[i]-vecs[j]) for i, j, x in zip(rows, cols, dots.data) if i<j])
-        self._neighbors = rows, cols, np.array([v/np.linalg.norm(v) for v in vecs])
+        rows, cols, self.vecs = zip(*[(i, j, self.vecs[i]-self.vecs[j]) for i, j, x in zip(rows, cols, dots.data) if i<j])
+        self._neighbors = rows, cols, np.array([v/np.linalg.norm(v) for v in self.vecs])
 
     def neighbors(self, word, thresh=1):
         dots = self.vecs.dot(self.v(word))
