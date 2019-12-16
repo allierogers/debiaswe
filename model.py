@@ -1,5 +1,6 @@
 import numpy as np
 from debiaswe.data import load_professions
+from debiaswe.debias import debias
 from debiaswe.we import WordEmbedding
 
 def compute_bias_direction(embedding, rep_words=['he', 'she']):

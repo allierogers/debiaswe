@@ -41,7 +41,7 @@ def upload_file():
             file.save(fp)
 
 
-            return redirect(url_for('analogies', filename=filename))
+            return redirect(url_for('bias_explorer', filename=filename))
 
     return '''
     <!doctype html>
@@ -53,82 +53,78 @@ def upload_file():
     </form>
     '''
 
-@app.route('/analogies/<filename>', methods=['GET', 'POST'])
-def analogies(filename):
-    fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    embedding = WordEmbedding(fp)
-    
-    if (request.method == 'POST') & (request.form.get('rep_word_one') is not None):
+@app.route('/bias_explorer/<filename>', methods=['GET', 'POST'])
+def bias_explorer(filename):
+    if request.method == 'POST':
+        fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        embedding = WordEmbedding(fp)
+        
         rep_word_one = request.form['rep_word_one']
         rep_word_two = request.form['rep_word_two']
         rep_words = [rep_word_one, rep_word_two]
-        v_protected = model.compute_bias_direction(embedding, rep_words)
-
-        # Analogies based on the protected direction
-        a_protected = embedding.best_analogies_dist_thresh(v_protected)
-        print(a_protected)
-
-        return '''
-        <!doctype html>
-        <title>Analogies</title>
-        <p>{a_protected}</p>
-        '''.format(a_protected=a_protected)
-    
-    if (request.method == 'POST') & (request.form.get('word_list') is not None):
-        v_protected = model.compute_bias_direction(embedding, ['he', 'she'])
-        wordset1, wordset2 = model.compute_bias_scores(embedding, v_protected)
         
-        return '''
-        <!doctype html>
-        <title>Bias Scores</title>
-        <h1>Welcome to the Bias Scores Page!</h1>
-        <p>{wordset1}</p>
-        <p>{wordset2}</p>
-        '''.format(wordset1=wordset1,
-                   wordset2=wordset2)
+        v_protected = model.compute_bias_direction(embedding, rep_words)
+        
+        if request.form['submit_button'] == 'Analogies':
+            # Analogies based on the protected direction
+            a_protected = embedding.best_analogies_dist_thresh(v_protected)
+            print(a_protected)
+
+            return '''
+            <!doctype html>
+            <title>Bias Explorer</title>
+            <h1>Analogies</h1> 
+            <p>{a_protected}</p>
+            '''.format(a_protected=a_protected)
+    
+        if request.form['submit_button'] == 'Bias Scores':
+            wordset1, wordset2 = model.compute_bias_scores(embedding, v_protected)
+
+            return '''
+            <!doctype html>
+            <title>Bias Scores</title>
+            <h1>Welcome to the Bias Scores Page!</h1>
+            <p>{wordset1}</p>
+            <p>{wordset2}</p>
+            '''.format(wordset1=wordset1,
+                       wordset2=wordset2)
+        
+        if request.form['submit_button'] == 'Debiasing':
+            wordset1, wordset2 = model.compute_bias_scores(embedding, v_protected)
+
+            return '''
+            <!doctype html>
+            <title>Bias Scores</title>
+            <h1>Welcome to the Bias Scores Page!</h1>
+            <p>{wordset1}</p>
+            <p>{wordset2}</p>
+            '''.format(wordset1=wordset1,
+                       wordset2=wordset2)
     
     return '''
         <!doctype html>
-        <title>Input Representative Words</title>
-        <h1>Input words that represent your area of potential bias</h1>
-        <p>For example: for gender, ['he', 'she'].</p>
+        <title>Bias Explorer</title>
         <form method=post enctype=multipart/form-data>
-          <p>Representative Words</p>
+          <h2>Representative Words</h2>
+          <p>(Required for all options)</p>
+          <p>Input words that represent your area of potential bias</p>
+          <p>For example: for gender, ['he', 'she'].</p>
           <input type="text" name="rep_word_one" value="he">
           <input type="text" name="rep_word_two" value="she">
-          <input type="submit" value="Get Analogies">
-        </form>
-        <form method=post enctype=multipart/form-data>
           <h2>Words of Interest</h2>
-          <input type="text" name="word_list" value="software engineer, detail-oriented, expert">
-          <input type="submit" value="Get Bias Scores">
-        </form>
-        '''
-
-@app.route('/bias_scores/<filename>', methods=['GET', 'POST'])
-def bias_scores(filename):
-    if request.method == 'POST':
-        fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-
-        embedding = WordEmbedding(fp)
-        word_list = request.form['word_list']
-
-        return '''
-        <!doctype html>
-        <title>Bias Scores</title>
-        <h1>Bias scores for key words</h1>
-        '''
-    
-    return '''
-        <!doctype html>
-        <title>Bias Scores</title>
-        <h1>Input words for which you would like to see bias scores.</h1>
-        <p>For example, if you plan to use the embedding for a resume ranking task, then I suggest you look at bias scores for terms related to the job posting, like “software engineer”, “detail-oriented”, or “expert.”</p>
-        <p>If you are interested in a more general task or set of tasks, you could look at bias scores for general positive and negative words like “good”, “violent”, “beautiful”, and “criminal.” </p>
-        <form method=post enctype=multipart/form-data>
-          <h2>Words of Interest</h2>
-          <input type="text" name="word_list" value="software engineer, detail-oriented, expert">
-          <input type="submit" value="Get Bias Scores">
+          <p>(Required for Bias Scores)</p>
+          <input type="text" name="word_list" value="software engineer, detail-oriented, expert" size=150>
+          <h2>Debiasing Inputs</h2>
+          <p>Dimension-Specific Words</p>
+          <input type="text" name="gender_specific_words" value="husband, wife" size=150>
+          <p>Definitional Words</p>
+          <input type="text" name="definitional_words" value="husband, wife" size=150>
+          <p>Equalize Words</p>
+          <input type="text" name="equalize_words" value="husband, wife" size=150>
+          <p></p>
+          <input type="submit" name="submit_button" value="Analogies">
+          <input type="submit" name="submit_button" value="Bias Scores">
+          <input type="submit" name="submit_button" value="Debiasing">
         </form>
         '''
 
