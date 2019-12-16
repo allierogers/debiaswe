@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 from flask import Flask, flash, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 
+from debiaswe.debias import debias
 from debiaswe.we import WordEmbedding
 import model
 
@@ -90,16 +91,18 @@ def bias_explorer(filename):
                        wordset2=wordset2)
         
         if request.form['submit_button'] == 'Debiasing':
-            wordset1, wordset2 = model.compute_bias_scores(embedding, v_protected)
+            # Need to figure out how to parse these inputs correctly
+            debiased_embedding = debias(embedding, 
+                                        request.form['specific_words'], 
+                                        request.form['definitional_words'], 
+                                        request.form['equalize_pairs'])
 
             return '''
             <!doctype html>
-            <title>Bias Scores</title>
-            <h1>Welcome to the Bias Scores Page!</h1>
-            <p>{wordset1}</p>
-            <p>{wordset2}</p>
-            '''.format(wordset1=wordset1,
-                       wordset2=wordset2)
+            <title>Debiased Embedding</title>
+            <h1>Your embedding has been debiased</h1>
+            <p>{debiased_embedding}</p>
+            '''.format(debiased_embedding=debiased_embedding)
     
     return '''
         <!doctype html>
@@ -116,11 +119,11 @@ def bias_explorer(filename):
           <input type="text" name="word_list" value="software engineer, detail-oriented, expert" size=150>
           <h2>Debiasing Inputs</h2>
           <p>Dimension-Specific Words</p>
-          <input type="text" name="gender_specific_words" value="husband, wife" size=150>
+          <input type="text" name="specific_words" value="husband, wife" size=150>
           <p>Definitional Words</p>
-          <input type="text" name="definitional_words" value="husband, wife" size=150>
+          <input type="text" name="definitional_words" value="woman, man" size=150>
           <p>Equalize Words</p>
-          <input type="text" name="equalize_words" value="husband, wife" size=150>
+          <input type="text" name="equalize_pairs" value="monastery, convent" size=150>
           <p></p>
           <input type="submit" name="submit_button" value="Analogies">
           <input type="submit" name="submit_button" value="Bias Scores">

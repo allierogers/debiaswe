@@ -8,7 +8,6 @@ def compute_bias_direction(embedding, rep_words=['he', 'she']):
     """
     words_group1 = [rep_words[2 * i] for i in range(len(rep_words) // 2)]
     words_group2 = [rep_words[2 * i + 1] for i in range(len(rep_words) // 2)]
-#     E = WordEmbedding('embeddings/w2v_gnews_small.txt')
     vs = [sum(embedding.v(w) for w in words) for words in (words_group2, words_group1)]
     vs = [v / np.linalg.norm(v) for v in vs]
 
@@ -26,4 +25,5 @@ def compute_bias_scores(embedding, v_protected):
     sp = sorted([(embedding.v(w).dot(v_protected), w) for w in profession_words])
 
     return sp[0:20], sp[-20:]
+
     
