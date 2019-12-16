@@ -1,13 +1,14 @@
 import numpy as np
+from debiaswe.data import load_professions
 from debiaswe.we import WordEmbedding
 
-def compute_bias_direction(rep_words=['he', 'she']):
+def compute_bias_direction(embedding, rep_words=['he', 'she']):
     """ Get the subspace that we will use to represent the bias. 
     """
     words_group1 = [rep_words[2 * i] for i in range(len(rep_words) // 2)]
     words_group2 = [rep_words[2 * i + 1] for i in range(len(rep_words) // 2)]
-    E = WordEmbedding('embeddings/w2v_gnews_small.txt')
-    vs = [sum(E.v(w) for w in words) for words in (words_group2, words_group1)]
+#     E = WordEmbedding('embeddings/w2v_gnews_small.txt')
+    vs = [sum(embedding.v(w) for w in words) for words in (words_group2, words_group1)]
     vs = [v / np.linalg.norm(v) for v in vs]
 
     v_protected = vs[1] - vs[0]
@@ -15,21 +16,13 @@ def compute_bias_direction(rep_words=['he', 'she']):
     
     return v_protected
 
-
-
-def main():
-    return "Hello"
-    parser = ArgumentParser()
-    parser.add_argument('--we_path')
-    parser.add_argument('--rep_words', default=['he', 'she'])
-    args = parser.parse_args()
+def compute_bias_scores(embedding, v_protected):
+    # load professions
+    professions = load_professions()
+    profession_words = [p[0] for p in professions]
     
-    # Load word embedding from provided filepath
-    E = WordEmbedding(args.we_path)
-    
-    print(args.rep_words)
-    rep_words = ['he', 'she']
-    v_protected = compute_bias_direction(rep_words)
+    # profession analysis gender
+    sp = sorted([(embedding.v(w).dot(v_protected), w) for w in profession_words])
 
-    # Analogies based on the protected direction
-    a_protected = E.best_analogies_dist_thresh(v_protected)
+    return sp[0:20], sp[-20:]
+    

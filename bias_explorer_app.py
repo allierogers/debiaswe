@@ -55,14 +55,14 @@ def upload_file():
 
 @app.route('/analogies/<filename>', methods=['GET', 'POST'])
 def analogies(filename):
-    if request.method == 'POST':
-        fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-
-        embedding = WordEmbedding(fp)
+    fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    embedding = WordEmbedding(fp)
+    
+    if (request.method == 'POST') & (request.form.get('rep_word_one') is not None):
         rep_word_one = request.form['rep_word_one']
         rep_word_two = request.form['rep_word_two']
         rep_words = [rep_word_one, rep_word_two]
-        v_protected = model.compute_bias_direction(rep_words)
+        v_protected = model.compute_bias_direction(embedding, rep_words)
 
         # Analogies based on the protected direction
         a_protected = embedding.best_analogies_dist_thresh(v_protected)
@@ -74,6 +74,19 @@ def analogies(filename):
         <p>{a_protected}</p>
         '''.format(a_protected=a_protected)
     
+    if (request.method == 'POST') & (request.form.get('word_list') is not None):
+        v_protected = model.compute_bias_direction(embedding, ['he', 'she'])
+        wordset1, wordset2 = model.compute_bias_scores(embedding, v_protected)
+        
+        return '''
+        <!doctype html>
+        <title>Bias Scores</title>
+        <h1>Welcome to the Bias Scores Page!</h1>
+        <p>{wordset1}</p>
+        <p>{wordset2}</p>
+        '''.format(wordset1=wordset1,
+                   wordset2=wordset2)
+    
     return '''
         <!doctype html>
         <title>Input Representative Words</title>
@@ -84,6 +97,11 @@ def analogies(filename):
           <input type="text" name="rep_word_one" value="he">
           <input type="text" name="rep_word_two" value="she">
           <input type="submit" value="Get Analogies">
+        </form>
+        <form method=post enctype=multipart/form-data>
+          <h2>Words of Interest</h2>
+          <input type="text" name="word_list" value="software engineer, detail-oriented, expert">
+          <input type="submit" value="Get Bias Scores">
         </form>
         '''
 
