@@ -40,9 +40,8 @@ def upload_file():
             fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(fp)
 
-            rep_word_one = request.form['rep_word_one']
-            rep_word_two = request.form['rep_word_two']
-            return redirect(url_for('analogies', filename=filename, rep_word_one=rep_word_one, rep_word_two=rep_word_two))
+
+            return redirect(url_for('analogies', filename=filename))
 
     return '''
     <!doctype html>
@@ -50,31 +49,70 @@ def upload_file():
     <h1>Upload new File</h1>
     <form method=post enctype=multipart/form-data>
       <input type="file" name="file">
-      <p>Representative Words</p>
-      <input type="text" name="rep_word_one" value="he">
-      <input type="text" name="rep_word_two" value="she">
-      <input type="submit" value="Upload and Get Analogies">
+      <input type="submit" value="Upload">
     </form>
     '''
 
-@app.route('/analogies/<filename>/<rep_word_one>/<rep_word_two>', methods=['GET', 'POST'])
-def analogies(filename, rep_word_one, rep_word_two):
+@app.route('/analogies/<filename>', methods=['GET', 'POST'])
+def analogies(filename):
     if request.method == 'POST':
-    fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    
-    embedding = WordEmbedding(fp)
-    rep_words = [rep_word_one, rep_word_two]
-    v_protected = model.compute_bias_direction(rep_words)
-    
-    # Analogies based on the protected direction
-    a_protected = embedding.best_analogies_dist_thresh(v_protected)
-    print(a_protected)
+        fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+        embedding = WordEmbedding(fp)
+        rep_word_one = request.form['rep_word_one']
+        rep_word_two = request.form['rep_word_two']
+        rep_words = [rep_word_one, rep_word_two]
+        v_protected = model.compute_bias_direction(rep_words)
+
+        # Analogies based on the protected direction
+        a_protected = embedding.best_analogies_dist_thresh(v_protected)
+        print(a_protected)
+
+        return '''
+        <!doctype html>
+        <title>Analogies</title>
+        <p>{a_protected}</p>
+        '''.format(a_protected=a_protected)
     
     return '''
-    <!doctype html>
-    <title>Analogies</title>
-    <p>{a_protected}</p>
-    '''.format(a_protected=a_protected)
+        <!doctype html>
+        <title>Input Representative Words</title>
+        <h1>Input words that represent your area of potential bias</h1>
+        <p>For example: for gender, ['he', 'she'].</p>
+        <form method=post enctype=multipart/form-data>
+          <p>Representative Words</p>
+          <input type="text" name="rep_word_one" value="he">
+          <input type="text" name="rep_word_two" value="she">
+          <input type="submit" value="Get Analogies">
+        </form>
+        '''
+
+@app.route('/bias_scores/<filename>', methods=['GET', 'POST'])
+def bias_scores(filename):
+    if request.method == 'POST':
+        fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+        embedding = WordEmbedding(fp)
+        word_list = request.form['word_list']
+
+        return '''
+        <!doctype html>
+        <title>Bias Scores</title>
+        <h1>Bias scores for key words</h1>
+        '''
+    
+    return '''
+        <!doctype html>
+        <title>Bias Scores</title>
+        <h1>Input words for which you would like to see bias scores.</h1>
+        <p>For example, if you plan to use the embedding for a resume ranking task, then I suggest you look at bias scores for terms related to the job posting, like “software engineer”, “detail-oriented”, or “expert.”</p>
+        <p>If you are interested in a more general task or set of tasks, you could look at bias scores for general positive and negative words like “good”, “violent”, “beautiful”, and “criminal.” </p>
+        <form method=post enctype=multipart/form-data>
+          <h2>Words of Interest</h2>
+          <input type="text" name="word_list" value="software engineer, detail-oriented, expert">
+          <input type="submit" value="Get Bias Scores">
+        </form>
+        '''
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
