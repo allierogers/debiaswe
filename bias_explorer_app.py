@@ -91,18 +91,21 @@ def bias_explorer(filename):
                        wordset2=wordset2)
         
         if request.form['submit_button'] == 'Debiasing':
-            # Need to figure out how to parse these inputs correctly
-            debiased_embedding = debias(embedding, 
-                                        request.form['specific_words'], 
-                                        request.form['definitional_words'], 
-                                        request.form['equalize_pairs'])
-
+            de = debias(embedding, 
+                        request.form['specific_words'], 
+                        request.form['equalize_pairs'],
+                        v_protected)
+            
+            print(de)
+            
+            de.save(os.path.join(app.config['UPLOAD_FOLDER'], 'debiased.txt'))
+            
             return '''
             <!doctype html>
             <title>Debiased Embedding</title>
             <h1>Your embedding has been debiased</h1>
-            <p>{debiased_embedding}</p>
-            '''.format(debiased_embedding=debiased_embedding)
+            <input type="submit" name="submit_button" value="Download Me">
+            '''
     
     return '''
         <!doctype html>
@@ -135,6 +138,11 @@ def bias_explorer(filename):
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
+
+@app.route('/uploads/<path:filename>', methods=['GET', 'POST'])
+def download(filename):
+    uploads = os.path.join(current_app.root_path, app.config['UPLOAD_FOLDER'])
+    return send_from_directory(directory=uploads, filename=filename, as_attachment=True)
 
 if __name__ == "__main__":
     app.run(debug=True)
