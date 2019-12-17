@@ -17,16 +17,17 @@ Tolga Bolukbasi, Kai-Wei Chang, James Zou, Venkatesh Saligrama, and Adam Kalai
 """
 
 
-def debias(E, gender_specific_words,  equalize, v_protected):
+def debias(E, gender_specific_words, equalize, v_protected):
     gender_direction = v_protected
     specific_set = set(gender_specific_words)
     for i, w in enumerate(E.words):
         if w not in specific_set:
             E.vecs[i] = we.drop(E.vecs[i], gender_direction)
     E.normalize()
-    candidates = {x for e1, e2 in ast.literal_eval(equalize) for x in [(e1.lower(), e2.lower()),
-                                                                       (e1.title(), e2.title()),
-                                                                       (e1.upper(), e2.upper())]}
+    nested_equalize = [equalize[i:i+2] for i in range(0, len(equalize), 2)]
+    candidates = {x for e1, e2 in nested_equalize for x in [(e1.lower(), e2.lower()),
+                                                     (e1.title(), e2.title()),
+                                                     (e1.upper(), e2.upper())]}
     print(candidates)
     for (a, b) in candidates:
         if (a in E.index and b in E.index):

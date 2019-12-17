@@ -47,8 +47,10 @@ def upload_file():
 
     return '''
     <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
+    <titleBias Explorer</title>
+    <h1>Welcome to Bias Explorer!</h1>
+    <h2>Upload new Word Embedding</h2>
+    <p>.txt file is recommended</p>
     <form method=post enctype=multipart/form-data>
       <input type="file" name="file">
       <input type="submit" value="Upload">
@@ -62,9 +64,8 @@ def bias_explorer(filename):
         fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         embedding = WordEmbedding(fp)
         
-        rep_word_one = request.form['rep_word_one']
-        rep_word_two = request.form['rep_word_two']
-        rep_words = [rep_word_one, rep_word_two]
+        rep_word_str = request.form['rep_word_str']
+        rep_words = rep_word_str.split(', ')
         
         v_protected = model.compute_bias_direction(embedding, rep_words)
         
@@ -94,8 +95,8 @@ def bias_explorer(filename):
         
         if request.form['submit_button'] == 'Debiasing':
             de = debias(embedding, 
-                        request.form['specific_words'], 
-                        request.form['equalize_pairs'],
+                        request.form['specific_words'].split(', '), 
+                        request.form['equalize_pairs'].split(', '),
                         v_protected)
             
             de.save(os.path.join(app.config['UPLOAD_FOLDER'], 'debiased.txt'))
@@ -118,8 +119,7 @@ def bias_explorer(filename):
           <p>(Required for all options)</p>
           <p>Input words that represent your area of potential bias</p>
           <p>For example: for gender, ['he', 'she'].</p>
-          <input type="text" name="rep_word_one" value="he">
-          <input type="text" name="rep_word_two" value="she">
+          <input type="text" name="rep_word_str" value="he, she">
           <h2>Words of Interest</h2>
           <p>(Required for Bias Scores)</p>
           <input type="text" name="word_list" value="software engineer, detail-oriented, expert" size=150>
