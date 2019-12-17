@@ -16,6 +16,7 @@ app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -53,6 +54,7 @@ def upload_file():
       <input type="submit" value="Upload">
     </form>
     '''
+
 
 @app.route('/bias_explorer/<filename>', methods=['GET', 'POST'])
 def bias_explorer(filename):
@@ -96,16 +98,17 @@ def bias_explorer(filename):
                         request.form['equalize_pairs'],
                         v_protected)
             
-            print(de)
-            
             de.save(os.path.join(app.config['UPLOAD_FOLDER'], 'debiased.txt'))
             
             return '''
             <!doctype html>
             <title>Debiased Embedding</title>
             <h1>Your embedding has been debiased</h1>
+            <form action="/uploads/{filename}" method="POST">
+            <input type="hidden" name="param1" value="value1">
             <input type="submit" name="submit_button" value="Download Me">
-            '''
+            </form>
+            '''.format(filename=filename)       
     
     return '''
         <!doctype html>
@@ -136,13 +139,15 @@ def bias_explorer(filename):
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
-@app.route('/uploads/<path:filename>', methods=['GET', 'POST'])
+
+@app.route('/uploads/<filename>', methods=['GET', 'POST'])
 def download(filename):
-    uploads = os.path.join(current_app.root_path, app.config['UPLOAD_FOLDER'])
-    return send_from_directory(directory=uploads, filename=filename, as_attachment=True)
+    return send_from_directory(directory=app.config['UPLOAD_FOLDER'], 
+                               filename=filename, 
+                               as_attachment=True)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
