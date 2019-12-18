@@ -1,0 +1,10 @@
+<!doctype html>
+<head>
+<title>Bias Explorer</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<h1>Your embedding has been debiased</h1>
+<form action="/uploads/{{filename}}" method="POST">
+<input type="hidden" name="param1" value="value1">
+<input type="submit" name="submit_button" value="Download Me">
+</form>

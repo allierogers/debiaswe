@@ -16,13 +16,13 @@ def compute_bias_direction(embedding, rep_words=['he', 'she']):
     
     return v_protected
 
-def compute_bias_scores(embedding, v_protected):
-    # load professions
-    professions = load_professions()
-    profession_words = [p[0] for p in professions]
+def compute_bias_scores(embedding, v_protected, words=None):
+    if not words:
+        # load professions
+        professions = load_professions()
+        words = [p[0] for p in professions]
     
-    # profession analysis gender
-    sp = sorted([(embedding.v(w).dot(v_protected), w) for w in profession_words])
+    sp = sorted([(embedding.v(w).dot(v_protected), w) for w in words])
 
     return sp[0:20], sp[-20:]
 

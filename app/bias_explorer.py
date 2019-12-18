@@ -63,25 +63,16 @@ def bias_explorer(filename):
             # Analogies based on the protected direction
             a_protected = embedding.best_analogies_dist_thresh(v_protected)
             print(a_protected)
+            
+            return render_template('analogies.html', a_protected=a_protected)
 
-            return '''
-            <!doctype html>
-            <title>Bias Explorer</title>
-            <h1>Analogies</h1> 
-            <p>{a_protected}</p>
-            '''.format(a_protected=a_protected)
     
         if request.form['submit_button'] == 'Bias Scores':
             wordset1, wordset2 = model.compute_bias_scores(embedding, v_protected)
 
-            return '''
-            <!doctype html>
-            <title>Bias Scores</title>
-            <h1>Welcome to the Bias Scores Page!</h1>
-            <p>{wordset1}</p>
-            <p>{wordset2}</p>
-            '''.format(wordset1=wordset1,
-                       wordset2=wordset2)
+            return render_template('bias_scores.html', 
+                                   wordset1=wordset1, 
+                                   wordset2=wordset2)
         
         if request.form['submit_button'] == 'Debiasing':
             de = debias(embedding, 
@@ -91,15 +82,7 @@ def bias_explorer(filename):
             
             de.save(os.path.join(app.config['UPLOAD_FOLDER'], 'debiased.txt'))
             
-            return '''
-            <!doctype html>
-            <title>Debiased Embedding</title>
-            <h1>Your embedding has been debiased</h1>
-            <form action="/uploads/{filename}" method="POST">
-            <input type="hidden" name="param1" value="value1">
-            <input type="submit" name="submit_button" value="Download Me">
-            </form>
-            '''.format(filename=filename)       
+            return render_template('debiasing.html', filename=filename)       
     
     return render_template('exploration_page.html')
 
