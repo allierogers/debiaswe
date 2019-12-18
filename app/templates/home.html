@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+<title>Bias Explorer</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <div class="home">
+    <h1>Welcome to Bias Explorer!</h1>
+    <h3>Upload new Word Embedding</h3>
+    <p>.txt file is recommended</p>
+    <form method=post enctype=multipart/form-data>
+      <input type="file" name="file">
+      <input type="submit" value="Upload">
+    </form>
+    </div>
+    <div class="about">
+        <p>About Bias Explorer</p>
+    </div>
+</body>
+</html>
