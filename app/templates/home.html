@@ -16,9 +16,16 @@
     </div>
     <div class="about">
         <h3>About Bias Explorer</h3>
+        <div class="center">
         <p>Bias explorer leverages the approach developed in a 2016 paper "Man is to Computer Programmer as Woman is to
             Homemaker? Debiasing Word Embeddings".</p>
         <a href='https://papers.nips.cc/paper/6228-man-is-to-computer-programmer-as-woman-is-to-homemaker-debiasing-word-embeddings.pdf'><p>Paper Here!</p></a>
+        <p>In “Man is to Computer Programmer as Woman is to Homemaker? Debiasing Word Embeddings,” Tolga Bolukbasi and a group of researchers from Boston University and Microsoft describe how gender bias is encoded into seemingly reliable word embeddings such as word2vec.</p> 
+        <p>Word embeddings and gender bias can both feel like abstract topics, but Bolukbasi et. al. put out a compelling example of the real-world impact this bias might have: citing the fact that word vectors have been shown to improve the performance of search ranking algorithms, they explain that a web search for “computer science phd student” would rank closer to male names than to female names. Male students would therefore rank higher than female students in the results.</p>
+        <p>One can measure or inspect the nature of bias in a corpus by first training word embeddings on the corpus and then using the methodology presented by Bolukbasi et. al. to define the gender bias subspace and projecting words onto that space.</p>
+        <p>Training one’s own word embeddings is computationally expensive and usually not necessary for lightweight tasks. For most projects, the programmer will use a pre-trained word embedding that was trained on a large, general corpus like Wikipedia entries or Google News articles. There are many pre-trained word embeddings out there to choose from, though: four from the makers of GloVe, four from FastText, three from word2vec, and others from lesser-known sources. Additionally, when the language used in a problem is specific to a domain, practitioners will often choose to train their own embeddings on the corpus specific to that domain.</p>
+        <p>With all the embeddings to choose from and create, the goal of Bias Explorer is to enable NLP practitioners to quickly and easily explore the nature and amount of bias in their embedding. You can choose to remove the bias, or you may decide to use a different embedding that does not demonstrate as much bias prior to the bias-removal step.</p>
+        </div>
     </div>
 </body>
 </html>

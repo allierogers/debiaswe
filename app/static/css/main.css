@@ -35,14 +35,12 @@ header h1.logo:hover {
 }
 div.home {
   padding: 10px 0 30px 0;
-  background-color: #E6E6FA;
   -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
           border-radius: 6px;
 }
 div.about {
   padding: 10px 0 30px 0;
-  background-color: #fbfbfe;
   -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
           border-radius: 6px;
@@ -68,7 +66,7 @@ h3 {
   color: #999;
 }
 p {
- text-align: center
+  text-align: center
 }
 input[type=text] {
   width: 80%;
@@ -114,4 +112,10 @@ button.buttonStyle {
     background-color: #000000;
     border-color: #000000;
     color: white;
+}
+.center {
+  margin: auto;
+  width: 60%;
+  border: 3px solid #fa8072;
+  padding: 10px;
 }
