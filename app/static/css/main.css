@@ -42,30 +42,51 @@ div.home {
 }
 div.about {
   padding: 10px 0 30px 0;
-  background-color: #3f3f3f;
+  background-color: #fbfbfe;
   -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
           border-radius: 6px;
+}
+h1 {
+  font-size: 4em;
+  margin-top: 50px;
+  text-align: center;
+  letter-spacing: -3px;
 }
 h2 {
   font-size: 3em;
   margin-top: 40px;
   text-align: center;
-  letter-spacing: -2px;
+  letter-spacing: 0px;
 }
 h3 {
   font-size: 1.7em;
   font-weight: 100;
   margin-top: 30px;
   text-align: center;
-  letter-spacing: -1px;
+  letter-spacing: 1px;
   color: #999;
 }
+p {
+ text-align: center
+}
 input[type=text] {
-  width: 100%;
+  width: 80%;
   padding: 12px 20px;
   margin: 8px 0;
   box-sizing: border-box;
+  font-size: 1.1em;
+  text-align: center;
+  position: relative;
+  display: block;
+  margin : 0 auto;
+}
+input[type=submit] {
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  font-size: 1.1em;
+  text-align: center;
 }
 .menu {
   float: right;

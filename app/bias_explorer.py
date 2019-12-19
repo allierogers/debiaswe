@@ -59,7 +59,7 @@ def bias_explorer(filename):
         
         v_protected = model.compute_bias_direction(embedding, rep_words)
         
-        if request.form['submit_button'] == 'Analogies':
+        if request.form['submit_button'] == 'Get Analogies':
             # Analogies based on the protected direction
             a_protected = embedding.best_analogies_dist_thresh(v_protected)
             print(a_protected)
@@ -67,14 +67,14 @@ def bias_explorer(filename):
             return render_template('analogies.html', a_protected=a_protected)
 
     
-        if request.form['submit_button'] == 'Bias Scores':
+        if request.form['submit_button'] == 'Get Bias Scores':
             wordset1, wordset2 = model.compute_bias_scores(embedding, v_protected)
 
             return render_template('bias_scores.html', 
                                    wordset1=wordset1, 
                                    wordset2=wordset2)
         
-        if request.form['submit_button'] == 'Debiasing':
+        if request.form['submit_button'] == 'Debias Embedding':
             de = debias(embedding, 
                         request.form['specific_words'].split(', '), 
                         request.form['equalize_pairs'].split(', '),
