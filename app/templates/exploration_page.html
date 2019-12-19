@@ -26,7 +26,7 @@
         <p>These are pairs of words that should NOT be neutralized on our subspace of interest. For example, the relationship between brother and sister would lose meaning if it were neutralized on the gender subspace.</p>
       <input type="text" name="specific_words" value="husband, wife" size=150>
       <h3>Equality Sets</h3>
-      <p>These are pairs of words that SHOULD be neutralized on our subspace of interest. For example, one might want the relationship between doctor and nurse to be neutral on the gender subspace.</p>
+      <p>These are pairs of words that all other words (except our specific words not to neutralize) should have equal relationships to. For example, if we are looking at racial bias towards people described as Black vs. people described as Asian, one might want most words to have the same relationship to "Black" as they do to "Asian", so Black, Asian could be an equality set. Then, the relationship between all other words -- doctor, criminal, quarterback, professor, whatever -- will be equadistant from the two words in each pair.</p>
       <input type="text" name="equalize_pairs" value="monastery, convent" size=150>
       <p></p>
       <h3><input type="submit" name="submit_button" value="Debias Embedding"></h3>
