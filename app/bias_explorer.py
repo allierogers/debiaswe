@@ -68,7 +68,7 @@ def bias_explorer(filename):
 
     
         if request.form['submit_button'] == 'Get Bias Scores':
-            wordset1, wordset2 = model.compute_bias_scores(embedding, v_protected)
+            wordset1, wordset2 = model.compute_bias_scores(embedding, v_protected, request.form['word_list'])
 
             return render_template('bias_scores.html', 
                                    wordset1=wordset1, 

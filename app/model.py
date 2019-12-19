@@ -22,6 +22,11 @@ def compute_bias_scores(embedding, v_protected, words=None):
         professions = load_professions()
         words = [p[0] for p in professions]
     
+    if type(words) != list:
+        words = words.split(', ')
+    print('printing words')
+    print(words)
+
     sp = sorted([(embedding.v(w).dot(v_protected), w) for w in words])
 
     return sp[0:20], sp[-20:]
