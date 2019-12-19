@@ -5,7 +5,10 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <h1 style="color:#fed3dd">Analogies</h1> 
-<p>{{a_protected}}</p>
+    <h3>Top 100</h3>
+    {% for analogy in a_protected[0:100] %}
+    <p>{{analogy}}</p>
+    {% endfor %}
 <h3><a href="/" class="button">Go Home</a></h3>
     <div class="about">
         <h3>About Analogies</h3>
