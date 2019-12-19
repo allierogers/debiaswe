@@ -15,7 +15,7 @@
       <input type="text" name="rep_word_str" value="he, she">
         <h3><input type="submit" name="submit_button" value="Get Analogies"></h3>
       <h2 style="color:#ffc3a0">Words of Interest</h2>
-      <h3>(Required for Bias Scores)</h3>
+      <h3>Leave blank to use default set of professions</h3>
       <input type="text" name="word_list" value="software engineer, detail-oriented, expert" size=150>
       <h3><input type="submit" name="submit_button" value="Get Bias Scores"></h3>
       <h2 style="color:#c6e2ff">Debiasing Inputs</h2>
@@ -25,7 +25,7 @@
         <h3>Specific Words NOT to Neutralize</h3>
         <p>These are pairs of words that should NOT be neutralized on our subspace of interest. For example, the relationship between brother and sister would lose meaning if it were neutralized on the gender subspace.</p>
       <input type="text" name="specific_words" value="husband, wife" size=150>
-      <h3>Words to Neutralize</h3>
+      <h3>Equality Sets</h3>
       <p>These are pairs of words that SHOULD be neutralized on our subspace of interest. For example, one might want the relationship between doctor and nurse to be neutral on the gender subspace.</p>
       <input type="text" name="equalize_pairs" value="monastery, convent" size=150>
       <p></p>

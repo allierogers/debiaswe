@@ -8,4 +8,14 @@
 <input type="hidden" name="param1" value="value1">
 <h3><input type="submit" name="submit_button" value="Download Debiased Embedding"></h3>
 </form>
+  <div class="center">
+            <p>Feel free to try out the Bias Explorer again with your debiased embedding and see how the analogy and bias score results have changed!</p>
+        </div>
+<div class="about">
+        <h3>About Debiasing</h3>
+        <div class="center">
+            <p>To debias the word embedding, we applied the "hard debiasing" procedure from the Bolukbasi et. al. paper, leveraging their open-source code. Debiasing is a two-step process. First we identify a subspace that represents the bias, similar to what we did when generating analogies but using the two sets of definitional words. The second step is to "neutralize and equalize," meaning that the provided "equality sets" are neutral in the subspace and ensures that any word (outside of the specific words not to neutralize) are equidistant to each word in a pair of equality words. To quote the paper's example, "if {grandmother, grandfather} and {guy, gal} were two equality sets, then after equalization babysit would be equidistant to grandmother and grandfather and also equidistant to gal and guy, but could still be closer to the grandparents and further from the gal and guy."</p>
+            <p>This process removes some distinctions that are valuable in certain applications, but doesn't totally lose all information. The paper provides the example that "grandfather a regulation" is a common phrase, while "grandmother a regulation" is not. **Editorial note: This IS biased, patriarchal  language; I argue that there is no reason not to use "grandmother" in lieu of "grandfather" for this phrase, but people will have different opinions on that.** After applying our hard debiasing method, the word embedding will no longer understand that distinction.</p>
+        </div>
+    </div>
 <h3><a href="/" class="button">Go Home</a></h3>

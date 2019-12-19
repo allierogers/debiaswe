@@ -4,9 +4,11 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <h2 style="color:#ffc3a0">Welcome to the Bias Scores Page!</h2>
+<h3>Top 20 in Direction A</h3>
 {% for w1 in wordset1 %}
     <p>{{w1}}</p>
     {% endfor %}
+<h3>Top 20 in Direction B</h3>
 {% for w2 in wordset2 %}
     <p>{{w2}}</p>
     {% endfor %}
